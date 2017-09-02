@@ -48,6 +48,7 @@ public class CreateReceiptRequestTest {
         receipt.amount = new BigDecimal(33.44);
 
         validator.validate(receipt);
+        validator.validate(receipt);
         assertThat(validator.validate(receipt), hasSize(2));
     }
 }
