@@ -43,12 +43,11 @@ public class CreateReceiptRequestTest {
     }
 
      @Test
-    public void testMissingMerchant() {
+    public void testMissingInteger() {
         CreateReceiptRequest receipt = new CreateReceiptRequest();
-        receipt.amount = new BigDecimal(33.44);
+        receipt.forTest = 3;
 
         validator.validate(receipt);
-        validator.validate(receipt);
-        assertThat(validator.validate(receipt), hasSize(2));
+        assertThat(validator.validate(receipt), empty());
     }
 }
