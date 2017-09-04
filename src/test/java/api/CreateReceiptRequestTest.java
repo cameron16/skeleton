@@ -42,12 +42,12 @@ public class CreateReceiptRequestTest {
         assertThat(validator.validate(receipt), hasSize(1));
     }
 
-     @Test
-    public void testMissingInteger() {
-        CreateReceiptRequest receipt = new CreateReceiptRequest();
-        receipt.forTest = new Integer(3);
-
-        validator.validate(receipt);
-        assertThat(validator.validate(receipt), empty());
-    }
+//     @Test
+//    public void testMissingInteger() {
+//        CreateReceiptRequest receipt = new CreateReceiptRequest();
+//        receipt.forTest = new Integer(3);
+//
+//        validator.validate(receipt);
+//        assertThat(validator.validate(receipt), empty());
+//    }
 }
