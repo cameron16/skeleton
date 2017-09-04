@@ -18,5 +18,4 @@ public class CreateReceiptRequest {
 
     public BigDecimal amount;
 
-    public Integer forTest;
 }
