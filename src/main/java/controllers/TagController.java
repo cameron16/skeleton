@@ -6,7 +6,7 @@ import dao.ReceiptDao;
 import generated.tables.records.ReceiptsRecord;
 
 
-import api.CreateTagRequest;
+//import api.CreateTagRequest;
 import dao.TagDao;
 import generated.tables.records.TagsRecord;
 
