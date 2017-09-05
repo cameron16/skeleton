@@ -2,7 +2,7 @@ package api;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 
 /**
  * This is an API Object.  It's job is to model and document the JSON API that we expose
@@ -12,12 +12,8 @@ import java.math.BigDecimal;
  * endpoint.  See {@link controllers.ReceiptController#createReceipt(CreateReceiptRequest)} for
  * and example.
  */
-public class CreateReceiptRequest {
-    @NotEmpty
-    public String merchant;
-
-    public BigDecimal amount;
-
-
+public class CreateTagRequest {
+	@NotEmpty
+    public int id;
 
 }

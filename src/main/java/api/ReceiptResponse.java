@@ -29,6 +29,8 @@ public class ReceiptResponse {
     Time created;
 
     public ReceiptResponse(ReceiptsRecord dbRecord) {
+        
+        
         this.merchantName = dbRecord.getMerchant();
         this.value = dbRecord.getAmount();
         this.created = dbRecord.getUploaded();

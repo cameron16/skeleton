@@ -43,7 +43,7 @@ public class CreateReceiptRequestTest {
     }
 
      @Test
-    public void testMissingInteger() {
+    public void testValidHasSizeZero() {
          CreateReceiptRequest receipt = new CreateReceiptRequest();
          receipt.merchant = "OK";
 
