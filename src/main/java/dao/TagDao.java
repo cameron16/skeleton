@@ -59,11 +59,17 @@ public class TagDao {
 
         // org.jooq.Result <org.jooq.Record3<java.lang.Integer,java.lang.String,java.math.BigDecimal>> temp = dsl.select(RECEIPTS.ID, RECEIPTS.MERCHANT, RECEIPTS.AMOUNT).from(TAGS).join(RECEIPTS).on(TAGS.ID.eq(RECEIPTS.ID)).where(TAGS.TAG.eq(currentTag)).fetch();
         // return dsl.selectFrom((org.jooq.Table)temp).fetch();
+        
 
-        return dsl.selectFrom(RECEIPTS).fetch();
+        // List m = dsl.select.join.(TAGS).on(TAGS.ID.eq(RECEIPTS.ID)).where(TAGS.TAG.eq(givenTag)).fetchInto();
 
-        //return dsl.selectFrom(RECEIPTS).join(TAGS).on(TAGS.ID.eq(RECEIPTS.ID)).where(TAGS.TAG.eq(givenTag)).fetch();
+        // return dsl.selectFrom(RECEIPTS).fetch();
 
+
+       // return dsl.selectFrom(RECEIPTS).join(TAGS).on(TAGS.ID.eq(RECEIPTS.ID)).where(TAGS.TAG.eq(givenTag)).fetchInto();
+        return dsl.select(RECEIPTS.ID, RECEIPTS.AMOUNT, RECEIPTS.MERCHANT).from(RECEIPTS).join(TAGS).on(RECEIPTS.ID.eq(TAGS.ID)).where(TAGS.TAG.eq(givenTag)).fetchInto(ReceiptsRecord.class);
+
+        //dsl.select..join..where.fetchInto(RecordClass.class)
 
 
         //return dsl.selectFrom(RECEIPTS.ID, RECEIPTS.MERCHANT,RECEIPTS.AMOUNT).from(TAGS).join(RECEIPTS).on(TAGS.ID.eq(RECEIPTS.ID)).where(TAGS.TAG.eq(givenTag)).fetch();
