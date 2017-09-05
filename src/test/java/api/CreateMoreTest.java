@@ -21,6 +21,6 @@ public class CreateReceiptRequestTest {
          receipt.merchant = "OK";
 
          receipt.amount = new BigDecimal(33.44);
-         assertThat(validator.validate(receipt), hasSize(0));
+         assertThat(validator.validate(receipt), hasSize(2));
     }
 }
