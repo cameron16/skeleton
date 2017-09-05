@@ -20,14 +20,11 @@ public class ReceiptDao {
     }
 
     public int insert(String merchantName, BigDecimal amount) {
-        System.out.println(RECEIPTS);
         ReceiptsRecord receiptsRecord = dsl
                 .insertInto(RECEIPTS, RECEIPTS.MERCHANT, RECEIPTS.AMOUNT)
                 .values(merchantName, amount)
                 .returning(RECEIPTS.ID)
                 .fetchOne();
-        System.out.println(RECEIPTS);
-        System.out.println(receiptsRecord);
 
         checkState(receiptsRecord != null && receiptsRecord.getId() != null, "Insert failed");
 

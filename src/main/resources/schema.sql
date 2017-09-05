@@ -8,12 +8,7 @@ CREATE TABLE receipts (
   PRIMARY KEY (id)
 );
 
-
-
 CREATE TABLE tags (
-
 	id INT UNSIGNED,
 	tag VARCHAR(255)
-
-
 );
