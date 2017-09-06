@@ -43,8 +43,7 @@ public class TagDao {
     }
 
     public List<ReceiptsRecord> getMatchingReceipts(String givenTag) {
-        return dsl.select(RECEIPTS.ID, RECEIPTS.AMOUNT, RECEIPTS.MERCHANT).from(RECEIPTS).join(TAGS).on(RECEIPTS.ID.eq(TAGS.ID)).where(TAGS.TAG.eq(givenTag)).fetchInto(ReceiptsRecord.class);
-
+        return dsl.select().from(RECEIPTS).join(TAGS).on(RECEIPTS.ID.eq(TAGS.ID)).where(TAGS.TAG.eq(givenTag)).fetchInto(ReceiptsRecord.class);
     }
 
 }

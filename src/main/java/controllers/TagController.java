@@ -5,11 +5,8 @@ import api.ReceiptResponse;
 import dao.ReceiptDao;
 import generated.tables.records.ReceiptsRecord;
 
-
-//import api.CreateTagRequest;
 import dao.TagDao;
 import generated.tables.records.TagsRecord;
-
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
