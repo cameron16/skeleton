@@ -1,11 +1,9 @@
 import controllers.ReceiptController;
-<<<<<<< HEAD
 import controllers.NetidController;
 import controllers.TagController;
 
-=======
+
 import controllers.StaticHtmlController;
->>>>>>> upstream/master
 import dao.ReceiptDao;
 import dao.TagDao;
 
