@@ -46,4 +46,15 @@ public class TagDao {
         return dsl.select().from(RECEIPTS).join(TAGS).on(RECEIPTS.ID.eq(TAGS.ID)).where(TAGS.TAG.eq(givenTag)).fetchInto(ReceiptsRecord.class);
     }
 
-}
+    public List<TagsRecord> getAllTags() {
+            return dsl.selectFrom(TAGS).fetch();
+    }
+
+
+
+
+    }
+
+
+
+//}
