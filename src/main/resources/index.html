@@ -46,6 +46,11 @@
 
         }
         .createdTitle{
+            position:fixed;
+            font-size: 2em;
+            left:60px;
+        }
+        .idTitle{
             font-size: 2em;
         }
 
@@ -99,7 +104,7 @@
         #merchant{
             width: 100%;
         }
-        
+
         #amount{
             width:100%;
         }
@@ -108,7 +113,16 @@
             position: fixed;
             left: 490px;
             width: 50px;
+            border-color: #000000;
+            border-style: solid;
+            border-width: 1px;
+
         }
+        .created{
+            position:fixed;
+            left:60px;
+        }
+
 
     </style>
     <script>
@@ -118,8 +132,6 @@
             const api = ""; // <- do not need a root api URL if this page is served directly by the API
             const receiptEndpoint = api +"/receipts";
             const tagsEndpoint = api + "/tags";
-            console.log("first line");
-            console.log(receiptEndpoint);
             $.getJSON(receiptEndpoint, function(receipts){
                 updateTableTitles();
                 for(var i=0; i < receipts.length; i++) {
@@ -130,16 +142,23 @@
                     var id = receipt.id;
                     updateReceiptDisplay(merchantName, amount, created, id);
                     for (var j =0; j< receipt.tags.length; j++){
-                        console.log(receipt.tags);
-                        console.log(receipt.tags[j]);
                         var tag = receipt.tags[j];
-                        $(`<span class = "tagEntered" id = ${receipt.id}> ${tag} <\span>`).appendTo($(".tags"));
+                        console.log(tag);
+                        console.log(tag.value);
+                        console.log(receipt);
+                        console.log($(".tags"));
+                        console.log($(".tags")[""+i]);
+                        console.log($('.receipt'));
+                        console.log($('.receipt')[""+i]);
+                        $(`<span class = "tagValue" id = ${tag}> ${tag} <\span>`).appendTo($(".tags")[""+i], $('.receipt')[""+i]);
                     }
+                    
                 }
             })
 
             var updateTableTitles = function(){
                 $(`<div class="receiptTitle">
+                    <span class = "idTitle">#</span>
                     <span class="createdTitle" >Time</span>
                     <span class ="merchantTitle">Merchant</span>
                     <span class ="amountTitle">Amount</span>
@@ -159,12 +178,6 @@
                     </div>`)
                         .appendTo($("#receiptList"));
              };
-
-             var updateTagDisplay = function(receipt, i){
-                console.log("receipt tags below");
-                console.log(receipt.tags);    
-             };
-           
 
             $(document).on("click","#add-receipt",function() {
                 $('#receiptDialogBox').toggle();
@@ -258,27 +271,47 @@
                             for (var i =0; i< res.length; i++){
                                 if (tagBox.value == res[i]){
                                     console.log("good");
-                                    var className = "#"+ tagBox.value;
+                                    var className = "#"+ tagBox.value;  
+                                    console.log(className);
+                                    console.log($('tags'));
                                     console.log($('.tags').find(className));
+                                    console.log($('.tag_input', $(this).parent()));
+                                    console.log(tagBox.parentElement);
                                     $('.tags').find(className).remove();
                                     flag = 1;
                                 }
                             }
                             if (flag ==0){
-                                $(`<span class = "tagEntered" id = ${tagBox.value}> ${tagBox.value} <\span>`).appendTo($(".tags", tagBox.parentElement));
+                                $(`<span class = "tagValue" id = ${tagBox.value}> ${tagBox.value} <\span>`).appendTo($(".tags", tagBox.parentElement));
                             }
                             tagBox.parentElement.removeChild(tagBox);
                         }
                     });
                 }
-            });     
+            }); 
+
+            $(document).on("click", ".tagValue", function() {
+                var tag = this;
+                var thisReceipt = $(this).parent().parent()[0];  
+                var allListElements = $("span");
+                var parentId = $(thisReceipt).find(allListElements)[0].textContent;
+                $.ajax({
+                    type: "PUT",
+                    url: tagsEndpoint +"/"+ tag.textContent,
+                    data: JSON.stringify(parentId),
+                    contentType: "application/json; charset=utf-8",
+                    success: function () {
+                        tag.parentElement.removeChild(tag);
+                    }
+                });
+            });    
         })
 
 </script>
 </head>
 <body>
 <DIV id="container">
-    <h1>My receipts</h1>
+    <h1>My beautiful receipts</h1>
     <div class="button" id="add-receipt">+</div>
    
         <div id = "receiptDialogBox">
