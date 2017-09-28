@@ -44,20 +44,47 @@ public class ReceiptImageController {
         try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
             BatchAnnotateImagesResponse responses = client.batchAnnotateImages(Collections.singletonList(request));
             AnnotateImageResponse res = responses.getResponses(0);
+            AnnotateImageResponse res2 = responses.getResponses(1);
+
 
             String merchantName = null;
             BigDecimal amount = null;
-
             // Your Algo Here!!
             // Sort text annotations by bounding polygon.  Top-most non-decimal text is the merchant
             // bottom-most decimal text is the total amount
+            int first = 0;
+            String firstWord = "didn't work";
+            System.out.println(res.getTextAnnotationsList().get(0));
+            System.out.println("test is above");
             for (EntityAnnotation annotation : res.getTextAnnotationsList()) {
+                if (first ==0){
+                    first++;
+                    String firstText =annotation.getDescription();
+                    System.out.println(firstText);
+                    String[] textSplit = firstText.split("\\r?\\n"); //split by newline
+                    //String[] textSplit = firstText.split(" ");
+                    firstWord = textSplit[0]; 
+                    for (int i =0; i<textSplit.length; i++){
+                        System.out.println(textSplit[i]);
+                    }
+                    System.out.println(firstWord);
+                }
                 out.printf("Position : %s\n", annotation.getBoundingPoly());
                 out.printf("Text: %s\n", annotation.getDescription());
             }
 
+
+            merchantName = firstWord;
+            amount = new BigDecimal(2.3);
             //TextAnnotation fullTextAnnotation = res.getFullTextAnnotation();
             return new ReceiptSuggestionResponse(merchantName, amount);
+        }
+        catch (Exception e){
+
+            String merchantName = "EXCEPT BLOCK";
+            BigDecimal amount = new BigDecimal(2.3);
+            return new ReceiptSuggestionResponse(merchantName, amount);
+
         }
     }
 }

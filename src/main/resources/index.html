@@ -15,6 +15,18 @@
             color: white;
             text-align: center;
         }
+        #start-camera{
+            background-color:#55A;
+            border: 1px solid #229;
+            width: 100px;
+            float: right;
+            font-size: 2em;
+            color: white;
+            text-align: center;
+
+        }
+
+
         #receiptList {
             border: 1px solid green;
             clear: both;
@@ -90,6 +102,25 @@
             display: block;
         }
 
+
+        #cameraDialogBox{
+            top: 100px;
+            width: 200px;
+            text-align: center;
+            background-color: #FF8C00;
+            border-width: 2px;
+            border-color: #000000;
+            border-style:solid;
+
+            display: none;
+            float: right;
+        }
+
+        #cameraDialogBox input {
+            display: block;
+        }
+
+
         #save-receipt {
             border: 2px #000000;
             border-color: #000000;
@@ -98,6 +129,16 @@
         }
 
         #cancel-receipt {
+            border-style:hidden hidden hidden hidden;
+        }
+
+        #take-pic{
+            border: 2px #000000;
+            border-color: #000000;
+            border-style:solid hidden solid hidden;
+            border-width: 2px;
+        }
+        #take-pic-cancel{
             border-style:hidden hidden hidden hidden;
         }
 
@@ -122,6 +163,10 @@
             position:fixed;
             left:60px;
         }
+        #canvas{
+            display: none;
+        }
+
 
 
     </style>
@@ -132,6 +177,7 @@
             const api = ""; // <- do not need a root api URL if this page is served directly by the API
             const receiptEndpoint = api +"/receipts";
             const tagsEndpoint = api + "/tags";
+            const imageEndpoint = api +"/images";
             $.getJSON(receiptEndpoint, function(receipts){
                 updateTableTitles();
                 for(var i=0; i < receipts.length; i++) {
@@ -181,6 +227,7 @@
 
             $(document).on("click","#add-receipt",function() {
                 $('#receiptDialogBox').toggle();
+                $('#cameraDialogBox').hide();
             });
 
              $(document).on("click","#cancel-receipt",function(){
@@ -304,7 +351,72 @@
                         tag.parentElement.removeChild(tag);
                     }
                 });
-            });    
+            });  
+
+
+            $(document).on("click","#start-camera",function() {
+                $('#cameraDialogBox').toggle();
+                $('#receiptDialogBox').hide();
+                //start video
+                var video = document.getElementById('video');
+
+                navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                    video.src = window.URL.createObjectURL(stream);
+                    video.play();
+                });
+
+            });
+
+            $(document).on("click","#take-pic-cancel",function(){
+                //also close the video
+                $('#cameraDialogBox').toggle();
+                navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                    var track = stream.getTracks()[0];  // if only one media track
+                    track.stop();
+                });
+             });
+
+             $(document).on("click","#take-pic",function(){
+                $('#cameraDialogBox').toggle();
+                var video = document.getElementById('video');
+                var canvas = document.getElementById('canvas');
+                var context = canvas.getContext('2d');
+                context.drawImage(video, 0, 0, 640, 480);
+                var myBase64 = canvas.toDataURL();
+                //console.log(myBase64);
+                myBase64 = myBase64.substring(22);
+                //console.log(myBase64);
+                navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                    var track = stream.getTracks()[0];  // if only one media track
+                    track.stop();
+                });
+                var secondEncoding = canvas.toDataURL('image/png').split(',')[1]; //works
+                
+                console.log(secondEncoding);
+
+                //getting an image of a receipt
+                // var base_image = new Image();
+                // base_image.src = 'receipt_img.png';
+                // context.drawImage(base_image, 0, 0, 640, 480);
+                // var otherBase64 = canvas.toDataURL('image/png').split(',')[1];
+                // console.log(otherBase64);
+               
+
+                $.ajax({
+                    type: "POST",
+                    url:    api + "/images",
+                    data: secondEncoding,
+                    contentType: "text/plain",
+                    success: function (response) { 
+                        console.log("we took a photo");                   
+                        $('#receiptDialogBox').toggle();
+                        $("#amount").val(response.amount);
+                        $('#merchant').val(response.merchantName);
+                    }
+                });
+             });
+
+
         })
 
 </script>
@@ -313,6 +425,10 @@
 <DIV id="container">
     <h1>My beautiful receipts</h1>
     <div class="button" id="add-receipt">+</div>
+
+
+    <div class="button" id="start-camera">Camera</div>
+
    
         <div id = "receiptDialogBox">
             <input type="text" id = "merchant" value="Enter Merchant"
@@ -326,6 +442,17 @@
             <div class = "button" id = "save-receipt">Save</div>
             <div class = "button" id = "cancel-receipt">Cancel</div>
         </div>
+
+
+        <div id = "cameraDialogBox">
+            <video id="video" width="160" height="120" autoplay></video>
+            <div class = "button" id = "take-pic">Snap</div>
+            <div class = "button" id = "take-pic-cancel">Cancel</div>
+        </div>
+
+        <canvas id="canvas"></canvas>
+
+
 
     </div>
 
