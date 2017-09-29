@@ -44,7 +44,7 @@ public class ReceiptImageController {
         try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
             BatchAnnotateImagesResponse responses = client.batchAnnotateImages(Collections.singletonList(request));
             AnnotateImageResponse res = responses.getResponses(0);
-            AnnotateImageResponse res2 = responses.getResponses(1);
+           // AnnotateImageResponse res2 = responses.getResponses(1);
 
 
             String merchantName = null;
@@ -54,7 +54,7 @@ public class ReceiptImageController {
             // bottom-most decimal text is the total amount
             int first = 0;
             String firstWord = "didn't work";
-            System.out.println(res.getTextAnnotationsList().get(0));
+           // System.out.println(res.getTextAnnotationsList().get(0));
             System.out.println("test is above");
             for (EntityAnnotation annotation : res.getTextAnnotationsList()) {
                 if (first ==0){
