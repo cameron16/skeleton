@@ -168,6 +168,11 @@
             display: none;
         }
 
+        video {
+            width: 400px;
+            height: 300px;
+            border: 1px solid black;
+        }
         /*
         video {
             width: 400px;
@@ -378,11 +383,17 @@
                 // Saving the track allows us to capture a photo
                 const track = mediaStream.getVideoTracks()[0];
                 imageCapture = new ImageCapture(track);
+                console.log("ok");
+                console.log(imageCapture);
             }
+
+
+            $('video').on('play', () => $('#take-pic').prop('disabled', false));
 
             $(document).on("click","#start-camera",function() {
 
-                
+
+                /*
                 $('#cameraDialogBox').toggle();
                 $('#receiptDialogBox').hide();
                 //start video
@@ -393,7 +404,11 @@
                     video.play();
                 });
             });
-/*
+*/
+
+                $('#take-pic').prop('disabled', false);
+
+
                 $('#cameraDialogBox').toggle();
                 $('#receiptDialogBox').hide();
                 navigator.mediaDevices.getUserMedia({video: {facingMode: {exact: "environment"}}})
@@ -403,11 +418,12 @@
                         .then(attachMediaStream)
                         .catch(error => {
                             console.log('you are fooked');
+                            console.error('getUserMedia() error:', error);
                         })
                 })
 
             });
-*/
+            let imageCapture;
             $(document).on("click","#take-pic-cancel",function(){
                 //also close the video
                 $('#cameraDialogBox').toggle();
@@ -417,9 +433,36 @@
                 });
              });
 
-             $(document).on("click","#take-pic",function(){
-               
+            $(document).on("click","#take-pic",function(){
+                $('#cameraDialogBox').toggle();
+                console.log(imageCapture);
+                imageCapture.grabFrame()
+                .then(img => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    canvas.getContext('2d').drawImage(img, 0, 0);
+                    const base64EncodedImageData = canvas.toDataURL('image/png').split(',')[1];
+                    console.log(base64EncodedImageData);
+                    $.ajax({
+                    type: "POST",
+                    url:    imageEndpoint,
+                    data: base64EncodedImageData,
+                    contentType: "text/plain",
+                    success: function (response) { 
+                        console.log("we took a photo");                   
+                        $('#receiptDialogBox').toggle();
+                        var myAmount = response.amount;
+                        var rounded = myAmount.toFixed(2);
+                        console.log(rounded);
+                        $("#amount").val(rounded);
+                        $('#merchant').val(response.merchantName);
+                    }
+                });
 
+                })
+            });
+/*
                 $('#cameraDialogBox').toggle();
                 var video = document.getElementById('video');
                 var canvas = document.getElementById('canvas');
@@ -458,65 +501,10 @@
                 });
              });
 
-
+*/
          })
         
-/*
-        function attachMediaStream(mediaStream) {
-            $('video')[0].srcObject = mediaStream;
 
-            // Saving the track allows us to capture a photo
-            const track = mediaStream.getVideoTracks()[0];
-            imageCapture = new ImageCapture(track);
-        }
-
-        function startVideo() {
-            navigator.mediaDevices.getUserMedia({video: {facingMode: {exact: "environment"}}})
-                .then(attachMediaStream)
-                .catch(error => {
-                    navigator.mediaDevices.getUserMedia({video: true})
-                        .then(attachMediaStream)
-                        .catch(error => {
-                            console.log('you are fooked');
-                        })
-                })
-        }
-
-        function takeSnapshot() {
-            // create a CANVAS element that is same size as the image
-            imageCapture.takePhoto()
-                .then(blob => createImageBitmap(blob))
-                .then(img => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-
-                    canvas.getContext('2d').drawImage(img, 0, 0);
-                    const base64EncodedImageData = canvas.toDataURL('image/png').split(',')[1];
-                    $.ajax({
-                        url: "/images",
-                        type: "POST",
-                        data: base64EncodedImageData,
-                        contentType: "text/plain",
-                        success: function() {},
-                   })
-                    .then(response => {
-                        $('video').after(`<div>got response: <pre>${JSON.stringify(response)}</pre></div>`);
-                    })
-                    .always(() => console.log('request complete'));
-
-                    // For debugging, you can uncomment this to see the frame that was captured
-                    // $('BODY').append(canvas);
-                });
-
-        }
-
-        $(function () {
-            $('#start').on('click', startVideo);
-            $('video').on('play', () => $('#snapshot').prop('disabled', false));
-            $('#snapshot').on('click', takeSnapshot);
-        });
-*/
 
        
 
@@ -550,7 +538,8 @@
 
 
         <div id = "cameraDialogBox">
-            <video id="video" width="160" height="120" autoplay></video>
+            <!-- <video id="video" width="160" height="120" autoplay></video> -->
+            <video autoplay></video>
             <div class = "button" id = "take-pic">Snap</div>
             <div class = "button" id = "take-pic-cancel">Cancel</div>
         </div>
