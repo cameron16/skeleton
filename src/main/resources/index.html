@@ -366,9 +366,12 @@
                 var thisReceipt = $(this).parent().parent()[0];  
                 var allListElements = $("span");
                 var parentId = $(thisReceipt).find(allListElements)[0].textContent;
+                console.log(tag.textContent);
+                var noWhitespaceTag = $.trim(tag.textContent);
+                console.log(noWhitespaceTag);
                 $.ajax({
                     type: "PUT",
-                    url: tagsEndpoint +"/"+ tag.textContent,
+                    url: tagsEndpoint +"/"+ noWhitespaceTag,
                     data: JSON.stringify(parentId),
                     contentType: "application/json; charset=utf-8",
                     success: function () {
@@ -391,7 +394,7 @@
             $('video').on('play', () => $('#take-pic').prop('disabled', false));
 
             $(document).on("click","#start-camera",function() {
-
+                console.log("v1");
 
                 /*
                 $('#cameraDialogBox').toggle();

@@ -44,8 +44,8 @@ public class ReceiptImageController {
         AnnotateImageRequest request = this.requestBuilder.setImage(img).build();
 
         HashSet<Character> mySet = new HashSet<Character>();
-        Character allNums[] ={'0', '1','2','3','4','5','6','7','8','9','.',','};
-        for (int i =0; i<12; i++){
+        Character allNums[] ={'0', '1','2','3','4','5','6','7','8','9','.',',', '$'};
+        for (int i =0; i<13; i++){
             mySet.add(allNums[i]);
         }
 
@@ -75,7 +75,12 @@ public class ReceiptImageController {
                 String[] textSplit = firstText.split("\\r?\\n"); //split by newline
                 if (first ==0){
                     first++;
-                    firstWord = textSplit[0]; 
+                    String firstLine = textSplit[0];
+                    firstWord = firstLine.split(" ")[0];
+                    
+
+                    //firstWord = textSplit[0]; 
+                    
                     // for (int i =0; i<textSplit.length; i++){
                     //     //System.out.println(textSplit[i]);
                     // }
@@ -134,6 +139,11 @@ public class ReceiptImageController {
                 if (lastNumber.charAt(i)==','){
                     lastNumber=lastNumber.substring(0,i)+"."+lastNumber.substring(i+1);
                 }
+            }
+
+            //get the $ out
+            if (lastNumber.charAt(0) == '$'){
+                lastNumber = lastNumber.substring(1);
             }
 
             merchantName = firstWord;
